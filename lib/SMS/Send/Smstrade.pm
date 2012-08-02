@@ -11,15 +11,6 @@ use parent qw(SMS::Send::Driver);
 
 SMS::Send::Smstrade - An SMS::Send driver for the smstrade.de service
 
-=head1 VERSION
-
-Version 0.02
-
-=cut
-
-our $VERSION = '0.02';
-
-
 =head1 SYNOPSIS
 
     # create the sender object
