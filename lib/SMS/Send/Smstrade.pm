@@ -1,7 +1,9 @@
 package SMS::Send::Smstrade;
+# ABSTRACT: A SMS::Send driver for smstrade.de
 
-use warnings;
 use strict;
+use warnings;
+
 use LWP::UserAgent;
 use URI::Escape;
 
@@ -9,7 +11,7 @@ use parent qw(SMS::Send::Driver);
 
 =head1 NAME
 
-SMS::Send::Smstrade - An SMS::Send driver for the smstrade.de service
+SMS::Send::Smstrade - A SMS::Send driver for the smstrade.de service
 
 =head1 SYNOPSIS
 
