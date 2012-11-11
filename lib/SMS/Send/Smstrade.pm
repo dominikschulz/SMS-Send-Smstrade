@@ -25,7 +25,7 @@ SMS::Send::Smstrade - A SMS::Send driver for the smstrade.de service
         text    => 'You message may use up to 160 chars',
         to'     => '+49 555 4444', # always use the intl. calling prefix
     );
-    
+
     if ( $sent ) {
         print "Sent message\n";
     } else {
@@ -61,7 +61,7 @@ Using this driver will cost you money. B<YOU HAVE BEEN WARNED>
         _apikey => '123',
         _route  => 'basic',
     );
-    
+
 The C<new> constructor requires at least one parameter, which should be passed
 throuh from the L<SMS::Send> constructor.
 
@@ -101,14 +101,14 @@ sub new {
         or $params{_verbose} = 1;
     my $self = \%params;
     bless $self, $class;
-    
+
     $self->{_url} = 'https://gateway.smstrade.de/';
     $self->{_ua} = LWP::UserAgent::->new();
     $self->{_ua}->agent('SMS::Send::Smstrade/0.1');
     if($self->{_ua}->can('ssl_opts')) {
         $self->{_ua}->ssl_opts( verify_hostname => 0, );
     }
-    
+
     return $self;
 }
 
@@ -120,17 +120,17 @@ List all known response codes with their explaination.
 
 sub responses {
     my $self = shift;
-    
+
     if(!$self->{_responses}) {
         $self->{_responses} = $self->_init_responses();
     }
-    
+
     return $self->{_responses};
 }
 
 sub _init_responses {
     my $self = shift;
-    
+
     # see http://www.smstrade.de/pdf/SMS-Gateway_HTTP_API_v2_de.pdf, page 5
     my $resp_ref = {
         '10'    => 'Destination Number not correct (Parameter: to)',
@@ -145,7 +145,7 @@ sub _init_responses {
         '80'    => 'Failed to submit to SMS-C. Use another route or contact support.',
         '100'   => 'SMS successfull submitted.',
     };
-    
+
     return $resp_ref;
 }
 
@@ -158,10 +158,10 @@ Send an SMS. See L<SMS::Send> for the details.
 sub send_sms {
     my $self = shift;
     my %params = @_;
-    
+
     my $destination = $self->_clean_number($params{to});
     my $message = substr($params{text},0,159);
-    
+
     my %args = (
         'key'       => $self->{_apikey},
         'message'   => $message,
@@ -172,15 +172,15 @@ sub send_sms {
         'message_id' => 1,
         'count'     => 1,
     );
-    
+
     my $content = join('&', map { uri_escape($_).'='.uri_escape($args{$_}) } keys %args);
-    
+
     my $url = $self->{_url}.'?'.$content;
     my $req = HTTP::Request::->new( GET => $url, );
     my $res = $self->{_ua}->request($req);
-    
+
     print 'Requesting URL '.$url."\n" if $self->{_verbose};
-    
+
     if($res->is_success() && $res->content() =~ m/^100\D/) {
         print 'Sent '.$message.' to '.$destination."\n" if $self->{_verbose};
         return 1;
@@ -197,10 +197,10 @@ sub send_sms {
 sub _clean_number {
     my $self = shift;
     my $number = shift;
-    
+
     # strip all non-number chars
     $number =~ s/\D//g;
-    
+
     return $number;
 }
 
